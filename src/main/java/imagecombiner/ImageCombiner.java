@@ -2,7 +2,9 @@ package imagecombiner;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import uilibrary.animation.ImageLoader;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 /**
  * Takes bunch of images named in format img_x-y.jpg and combines them to single large image.
@@ -38,14 +40,53 @@ public class ImageCombiner {
 		
 		System.out.println("Done creating the image! Saving to file...");
 		
-		ImageLoader.saveImage(buf, path + outputFilename, outputFilename.substring(outputFilename.lastIndexOf(".") + 1));
+		saveImage(buf, path + outputFilename, outputFilename.substring(outputFilename.lastIndexOf(".") + 1));
 		
 		System.out.println("Done!");
     }
 	
 	private static void addImage(Graphics2D g, int x, int y, int pieceX, int pieceY, String path) {
-		BufferedImage img = ImageLoader.loadImage(path + "img_" + x + "-" + y + ".jpg", true);
+		BufferedImage img = loadImage(path + "img_" + x + "-" + y + ".jpg", true);
 		
 		g.drawImage(img, x * pieceX, y * pieceY, null);
+	}
+	
+	private static BufferedImage loadImage(String path, boolean absolutePath) {
+		try {
+			if (absolutePath) {
+				return ImageIO.read(new File(path));
+			} else {
+				return loadImage(path);
+			}
+		} catch (IOException e) {
+			System.out.println("IOException " + e + ", " + path);
+		}
+		
+		return null;
+	}
+	
+	private static BufferedImage loadImage(String path) {
+		try {
+			return ImageIO.read(ImageCombiner.class.getResource(path)); //If it doesnt work, might need to build the project
+			//return ImageIO.read(getClass().getResource(path)); //works if non-static
+			//return ImageIO.read(new File(path)); //dont work (has to be static)
+		} catch (IOException e) {
+			System.out.println("IOException " + e + ", " + path);
+		} catch (NullPointerException e) {
+			System.out.println("Couldn't get resource. Path was null " + e + ", " + path);
+		} catch (IllegalArgumentException e) {
+			System.out.println("Couldn't find the resource (resource was null) " + e + ", " + path);
+		}
+
+		return null;
+	}
+	
+	private static void saveImage(BufferedImage img, String path, String ext) {
+		try {
+			File outputfile = new File(path);
+			ImageIO.write(img, ext, outputfile);
+		} catch (IOException e) {
+			System.out.println("IOException " + e + ", " + path);
+		}
 	}
 }

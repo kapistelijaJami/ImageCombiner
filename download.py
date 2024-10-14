@@ -41,11 +41,11 @@ def download_images(base_url, start_x, end_x, start_y, end_y, output_dir):
                 print(f"Error downloading image: {image_url} (Status code: {image_response.status_code})")
 
 # Example usage
-base_url = "https://s.rsg.sc/sc/images/games/GTAV/map/render/7/"
+base_url = "https://example.com/path/"
 start_x = 0  # Start is inclusive
-end_x = 64  # End is exclusive
-start_y = 64
-end_y = 96
+end_x = 20  # End is exclusive
+start_y = 0
+end_y = 20
 output_dir = "images"
 
 download_images(base_url, start_x, end_x, start_y, end_y, output_dir)

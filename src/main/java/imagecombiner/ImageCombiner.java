@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 /**
  * Takes bunch of images in some filename format where x and y will be replaced by their
- * grid position index (default format: img_x-y.jpg) and combines them to a single large image.
+ * grid position index (numbers start top left) (default format: img_x-y.jpg) and combines them to a single large image.
  */
 public class ImageCombiner {
     public static void main(String[] args) {
@@ -75,27 +75,6 @@ public class ImageCombiner {
 			}
 		}
 		return res;
-		
-		/*Old way:
-		String[] parts = inputFormat.split("[xy]", -1); //Will have parts separated by x's and y's, and empty strings for x and y.
-		String s = inputFormat.replaceAll("[^xy]", ""); //Records the order of x's and y's so we can replace the empty string with the correct variable.
-		
-		String res = "";
-		int i = 0;
-		for (String part : parts) {
-			if (part.isBlank()) {
-				char c = s.charAt(i);
-				if (c == 'x') {
-					res += x;
-				} else if (c == 'y') {
-					res += y;
-				}
-				i++;
-			} else {
-				res += part;
-			}
-		}
-		return res;*/
 	}
 	
 	private static BufferedImage loadImage(String path, boolean absolutePath) {

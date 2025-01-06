@@ -13,19 +13,21 @@ import javax.imageio.ImageIO;
  * grid position index (numbers start top left) (default format: img_x-y.jpg) and combines them to a single large image.
  */
 public class ImageCombiner {
-    public static void main(String[] args) {
+	private static Color fillColorIfNullImage = Color.WHITE;
+	
+	public static void main(String[] args) {
 		//createTestPieces(1024, 1024, 3, 3, "G:\\Lataukset\\Tiedostot\\parts\\");
 		
 		
 		//CHANGE THESE SETTINGS:
 		
-		String path = "G:\\Lataukset\\Tiedostot\\parts\\"; //Folder where the images are, and where the resulting image will be saved.
+		String path = "C:\\Users\\Jami\\Documents\\NetBeansProjects\\ImageCombiner\\images"; //Folder where the images are, and where the resulting image will be saved.
 		String inputFileFormat = "img_x-y.jpg";	//Default: "img_x-y.jpg". x and y will be replaced by numbers in code.
-		String outputFilename = "combined.jpg";
-		int nX = 3;		//Number of pieces in x direction
-		int nY = 3;		//Number of pieces in y direction
-		int pieceX = 1024;	//Piece x size in pixels
-		int pieceY = 1024;	//Piece y size in pixels
+		String outputFilename = "combined.png";
+		int nX = 40;		//Number of pieces in x direction
+		int nY = 29;		//Number of pieces in y direction
+		int pieceX = 256;	//Piece x size in pixels
+		int pieceY = 256;	//Piece y size in pixels
 		
 		
 		//DON'T TOUCH THESE:
@@ -37,8 +39,10 @@ public class ImageCombiner {
 			path += "\\";
 		}
 		
-		BufferedImage buf = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); //If you need alpha you can change this to TYPE_INT_ARGB
+		BufferedImage buf = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB); //If you need alpha you can change this to TYPE_INT_ARGB
 		Graphics2D g = (Graphics2D) buf.getGraphics();
+		g.setColor(fillColorIfNullImage);
+		g.fillRect(0, 0, w, h);
 		
 		for (int y = 0; y < nY; y++) {
 			System.out.println("Starting row y = " + y);
@@ -57,8 +61,12 @@ public class ImageCombiner {
 	
 	private static void addImage(Graphics2D g, int x, int y, int pieceX, int pieceY, String inputFormat, String path) {
 		BufferedImage img = loadImage(path + parseFormatToString(inputFormat, x, y), true);
-		
-		g.drawImage(img, x * pieceX, y * pieceY, null);
+		if (img == null) { //If didn't find, just fill with fillColorIfNullImage.
+			g.setColor(fillColorIfNullImage);
+			g.fillRect(x * pieceX, y * pieceY, pieceX, pieceY);
+		} else {
+			g.drawImage(img, x * pieceX, y * pieceY, null);
+		}
 	}
 	
 	private static String parseFormatToString(String inputFormat, int x, int y) {
